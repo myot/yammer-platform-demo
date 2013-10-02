@@ -1,0 +1,26 @@
+{
+  "author": "Myo Thein",
+  "name": "yammer-platform-demo",
+  "description": "Yammer Platform Demo",
+  "version": "0.1.0",
+  "homepage": "myot.ca",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:myot/yammer-platform-demo.git"
+  },
+  "engines": {
+    "node": ">=0.8.8"
+  },
+  "dependencies": {
+    "underscore" : "1.2.0"
+  , "connect": "1.0.1"
+  , "request": "2.1.1"
+  , "async": "0.1.18"
+  , "request": "1.9.x"
+  , "express": "~3.0.0"
+  , "handlebars": "~1.0.6"
+  },
+  "devDependencies": {
+  }
+}
+

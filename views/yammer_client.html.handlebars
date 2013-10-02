@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <!-- THIS FILE IS THE SAME AS embed_examples.html except it is a template -->
+
+    <!-- Use the below to test the Embed's ability to pull OG properties
+    for the created OG object from the meta properties on the page.
+    They can also be passed in via the API call. If neither of those are
+    present, the code will fall back to the URL and title of the page
+    -->
+    <!--
+    <meta property="og:title" content="All Three: Meta 7" />
+    <meta property="og:type" content="place" />
+    <meta property="og:image" content="http://seo-hacker.com/wp-content/uploads/2010/09/Meta-tags.jpg" />
+    <meta property="og:description" content="all three meta" />
+    <meta property="og:site_name" content="meta ala Dropbox" />
+   -->
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    
+    <!-- Load Local Vagrant JS SDK -->
+    
+    <script type="text/javascript"
+        src="http://www.yammer.dev/javascripts/yamjs/yam-platform-base.js"></script>    
+    
+    <script type="text/javascript"
+        src="http://www.yammer.dev/javascripts/yamjs/yam-embed-bootstrap.js"></script>
+    
+    <script type="text/javascript"
+        data-app-id="{{dataAppId}}" 
+        src="http://www.yammer.dev/javascripts/yamjs/yam-js-sdk-bootstrap.js"></script>
+    
+
+    <!-- Load From Staging / Production -->
+
+    <!-- Embed Feed / Buttons 
+    <script type="text/javascript"
+        src="https://www.yammer.dev.com/javascripts/platform_embed_bootstrap_packaged.js"></script>
+
+        
+    <!-- Loading on Staging for MyoEmbed
+    <script type="text/javascript"
+        data-app-id="VuPq1BExQnjrXrTn73n4cg" 
+        src="https://www.staging.yammer.com/javascripts/platform_js_sdk_packaged.js"></script>
+
+    -->
+
+    <style type="text/css">
+      
+      #myEmbed, #feed {
+        width: 390px;
+        height:600px;
+      }
+      
+      .embed-header {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 100%;
+        vertical-align: baseline;
+
+        padding: 12px 6px 8px 8px;
+        background-color: #f3f3f3;
+      }
+
+
+  </style>
+
+    <script>
+      yam.config({
+        debug: true
+      });
+
+      function displayAuthResult(authResult) {
+        console.log("AuthResult", authResult); //print user information to the console
+        
+        $('#yammer-login').html = 'Welcome to Yammer!'; 
+
+        $('#authResult').html('Auth Result:<br/>');
+        for (var field in authResult) {
+          $('#authResult').append(' ' + field + ': ' +
+              authResult[field] + '<br/>');
+        }
+        $('#authOps').show('slow');
+
+      }
+
+      function getCurrentUser() {
+        yam.platform.request({
+        //yam.request({
+          url: "users/current.json",     //this is one of many REST endpoints that are available
+          method: "GET",
+          data: { },
+          success: function (user) { //print message response information to the console
+            console.log("The request was successful.");
+            console.dir(user);
+            $('#authResult').html('User Result:<br/>');
+            for (var field in user) {
+              $('#authResult').append(' ' + field + ': ' +
+                  escape(user[field]) + '<br/>');
+            }
+
+          },
+          error: function (user) {
+            console.error("There was an error with the request.");
+          }
+        });
+
+      }
+
+      function createCORSRequest(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // XHR for Chrome/Firefox/Opera/Safari.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // XDomainRequest for IE.
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // CORS not supported.
+          xhr = null;
+        }
+        return xhr;
+      }
+
+      // Make the actual CORS request.
+      function makeCorsRequest() {
+        // All HTML5 Rocks properties support CORS.
+        var url = 'https://api.yammer.dev/api/v1/oauth2/token.json?client_id=yJK3G1YdwV71GLuPOj0cQ';
+
+        var xhr = createCORSRequest('GET', url);
+        if (!xhr) {
+          alert('CORS not supported');
+          return;
+        }
+
+        // Response handlers.
+        xhr.onload = function() {
+          var text = xhr.responseText;
+          alert('Response from CORS request to ' + url + ': ' + text);
+        };
+
+        xhr.onerror = function() {
+          alert('Woops, there was an error making the request.');
+        };
+
+        xhr.send();
+      }
+
+      function login() {
+        console.log("Trigger Login");
+        yam.getLoginStatus(
+          function(response) {
+            if (response.authResponse) {
+              displayAuthResult(response.access_token);
+            }
+            else {
+              console.log("not logged in");
+              yam.login(function (response) { //prompt user to login and authorize your app, as necessary
+                if (response.authResponse) {
+                  displayAuthResult(response.access_token);
+                }
+              });
+            }
+          }
+        );
+
+      }
+
+      function logout() {
+        yam.getLoginStatus(
+          function(response) {
+            if(response.authResponse) {
+              yam.logout(function (response) {
+                //alert("User was logged out");
+                location.reload();
+              })
+            }
+          }
+        );
+      }
+
+      function doServerLogin(){
+        var url = "https://www.yammer.dev/dialog/oauth?client_id=yJK3G1YdwV71GLuPOj0cQ"
+        window.location = url;
+      }
+
+      $(document).ready(function () {
+        
+        $('#disconnect').click(logout);
+        $('#yammer-login-button').click(login);
+        $('#yammer-server-login').click(doServerLogin);
+        $('#yammer-cors-button').click(makeCorsRequest);
+        $('#yammer-user-button').click(getCurrentUser);
+        
+ 
+        /*
+
+        yam.connect.loginButton('#yammer-login', 
+            function (resp) { 
+              if (resp.authResponse) { 
+                console.log("Got auth back");
+                
+                displayAuthResult(resp.access_token);
+              } 
+        }); 
+       
+        */
+
+         /** Event Listeners */
+        yam.on('all', function(eventname, msg){
+          console.log("========>>> yam.all =>", eventname, Date.now());
+        });
+
+        yam.on('error', function(e){
+          console.error("======>>> yam.error =>", e);
+        });
+
+        yam.on('/embed/feed/loadingCompleted', function(eventname, msg){
+          console.log("========>>> yam.loadingCompleted =>", eventname, msg);
+        });
+
+
+        yam.connect.actionButton({
+          container: '#follow'
+        , action: 'follow'
+        });
+
+        
+        yam.connect.actionButton({
+          container: '#like'
+          , action: 'like'
+        });
+        /**/
+
+        /* Embed Feed */
+        
+        yam.connect.embedFeed({
+          container: '#feed'
+        });
+        
+
+        /*
+         * Test OG instead of regular feed.  Comment out the section above.
+         
+        yam.connect.embedFeed({
+          container: '#feed'
+          , network: "gmail.com"
+          , feedType: "open-graph"
+          , objectProperties: { 
+                url: 'http://www.cnn.com/' 
+                , type: 'page'
+            }
+          , config: {
+               header: false
+               , footer: true
+               , showOpenGraphPreview: true
+               , promptText: "Custom watermark text for embed"
+            }
+        });
+       */ 
+
+       
+
+      });
+    </script>
+  </head>
+  <body>
+
+    <h2>Login</h2>
+    <div id="yammer-login"></div>
+
+    <button id="yammer-login-button">JS Login</button>
+
+    <button id="yammer-cors-button">CORS Auth</button>
+
+    <button id="yammer-user-button">Get Current User</button>
+    
+    <div id="authOps" style="display:none">
+      <p>User is now signed in to the app using Yammer</p>
+      <button id="disconnect" >Disconnect your Yammer account from this app</button>
+      <h2>Authentication Logs</h2>
+      <pre id="authResult"></pre>
+    </div>
+
+    <h2>Login with Server Flow</h2>
+    <button id="yammer-server-login">Login via Server Flow</button>
+
+    <h2>Follow Button</h2>
+    <div id="follow"></div>
+
+    <h2>Like Button</h2>
+    <div id="like"></div>
+
+    <h2>Embed Feed</h2>
+    <div id="myEmbed">
+      <div class="embed-header">Share this page with your coworkers</div>
+      <div id="feed"></div>
+    </div>
+
+  </body>
+</html>
