@@ -16,9 +16,8 @@ var templateData = {
   dataAppId: conf.dataAppId
 }
 
-// Just serve out the one template file
-app.get('/yammer_client.html', function(req, res){
-  app.render('yammer_client.html.handlebars', templateData, function(err, html){
+var handleHTMLView = function (req, res){  
+  app.render(req.params.name + '.html.handlebars', templateData, function(err, html){
     if (err) {
       console.log(err);
       res.send(500, { error: err });
@@ -28,24 +27,12 @@ app.get('/yammer_client.html', function(req, res){
       res.send(html);
     }
   });
-});
+}
 
-app.get('/facebook_client.html', function(req, res){
-  app.render('facebook_client.html.handlebars', templateData, function(err, html){
-    if (err) {
-      console.log(err);
-      res.send(500, { error: err });
-    } else {
-      res.set('Content-Type', 'text/html');
-      res.set('Cache-Control', 'no-cache');
-      res.send(html);
-    }
-  });
-});
-
+app.get('/:name.html', handleHTMLView);
 
 app.listen(conf.port);
 
 console.log('PID: ' + process.pid);
 console.log('URL:');
-console.log('http://local.yammer.dev:' + conf.port + '/yammer_client.html');
+console.log('http://localhost:' + conf.port + '/yammer_client.html');

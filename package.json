@@ -17,8 +17,9 @@
   , "request": "2.1.1"
   , "async": "0.1.18"
   , "request": "1.9.x"
-  , "express": "~3.0.0"
+  , "express": "3.x"
   , "handlebars": "~1.0.6"
+  , "consolidate": "*"
   },
   "devDependencies": {
   }

@@ -3,13 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <!-- THIS FILE IS THE SAME AS embed_examples.html except it is a template -->
-
-    <!-- Use the below to test the Embed's ability to pull OG properties
-    for the created OG object from the meta properties on the page.
-    They can also be passed in via the API call. If neither of those are
-    present, the code will fall back to the URL and title of the page
-    -->
+    
     <!--
     <meta property="og:title" content="All Three: Meta 7" />
     <meta property="og:type" content="place" />
@@ -20,9 +14,7 @@
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-    
-    <!-- Load Local Vagrant JS SDK -->
-    
+    <!-- Load Local Vagrant JS SDK 
     <script type="text/javascript"
         src="http://www.yammer.dev/javascripts/yamjs/yam-platform-base.js"></script>    
     
@@ -33,7 +25,7 @@
         data-app-id="{{dataAppId}}" 
         src="http://www.yammer.dev/javascripts/yamjs/yam-js-sdk-bootstrap.js"></script>
     
-
+    -->
     <!-- Load From Staging / Production -->
 
     <!-- Embed Feed / Buttons 
@@ -41,12 +33,11 @@
         src="https://www.yammer.dev.com/javascripts/platform_embed_bootstrap_packaged.js"></script>
 
         
-    <!-- Loading on Staging for MyoEmbed
+    <!-- Loading on Staging for MyoEmbed -->
     <script type="text/javascript"
-        data-app-id="VuPq1BExQnjrXrTn73n4cg" 
-        src="https://www.staging.yammer.com/javascripts/platform_js_sdk_packaged.js"></script>
+        data-app-id="{{dataAppId}}" 
+        src="https://www.yammer.com/javascripts/platform_js_sdk_packaged.js"></script>
 
-    -->
 
     <style type="text/css">
       
@@ -54,16 +45,6 @@
         width: 390px;
         height:600px;
       }
-      
-      .embed-header {
-        font-family: Helvetica, Arial, sans-serif;
-        font-size: 100%;
-        vertical-align: baseline;
-
-        padding: 12px 6px 8px 8px;
-        background-color: #f3f3f3;
-      }
-
 
   </style>
 
@@ -296,7 +277,6 @@
 
     <h2>Embed Feed</h2>
     <div id="myEmbed">
-      <div class="embed-header">Share this page with your coworkers</div>
       <div id="feed"></div>
     </div>
 
