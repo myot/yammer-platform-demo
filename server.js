@@ -14,7 +14,7 @@ var conf = JSON.parse(confFile);
 
 var templateData = {
   dataAppId: conf.dataAppId
-}
+};
 
 var handleHTMLView = function (req, res){  
   app.render(req.params.name + '.html.handlebars', templateData, function(err, html){
@@ -27,7 +27,7 @@ var handleHTMLView = function (req, res){
       res.send(html);
     }
   });
-}
+};
 
 app.get('/:name.html', handleHTMLView);
 
@@ -35,4 +35,4 @@ app.listen(conf.port);
 
 console.log('PID: ' + process.pid);
 console.log('URL:');
-console.log('http://localhost:' + conf.port + '/yammer_client.html');
+console.log('http://localhost:' + conf.port + '/index.html');

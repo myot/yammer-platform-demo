@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script data-app-id="{{dataAppId}}"  src="https://c64.assets-yammer.com/assets/platform_js_sdk.js"></script>
+  </head>
+  <body>
+    <script>
+      var currentUser;
+
+      function setLoginStatus(loggedIn) {
+        if (loggedIn) {
+          $('.not-logged-in').hide();
+          $('.logged-in').show('slow');
+        } else {
+          $('.not-logged-in').show('slow');
+          $('.logged-in').hide();
+        }
+      }
+
+      function displayAuthResult(authResult) {
+        console.log("AuthResult", authResult); //print user information to the console
+
+        $('#yammer-login').innerHTML = 'Welcome to Yammer!';
+        setLoginStatus(true);
+
+        $('#authResult').html('Auth Result:<br/>');
+        for (var field in authResult) {
+          $('#authResult').append(' ' + field + ': ' +
+              authResult[field] + '<br/>');
+        }
+        $('#authOps').show('slow');
+      }
+
+      function getCurrentUser(callback) {
+        yam.platform.request({
+        // yam.request({
+          url: "users/current.json",     //this is one of many REST endpoints that are available
+          method: "GET",
+          data: { },
+          success: function (user) { //print message response information to the console
+            currentUser = user;
+            console.log("User request was successful.");
+            console.dir(user);
+
+            setLoginStatus(true);
+            $('#authResult').html('User Result:<br/>');
+            for (var field in user) {
+              $('#authResult').append(' ' + field + ': ' +
+                  escape(user[field]) + '<br/>');
+            }
+
+            if (callback){
+              callback(user);
+            }
+
+          },
+          error: function (user) {
+            console.error("There was an error with the request.");
+          }
+        });
+      }
+
+      function login() {
+        console.log("Trigger LoginStatus");
+        yam.getLoginStatus({token: ''},
+          function(response) {
+            if (response.authResponse) {
+              console.log("Logged in and got code");
+              displayAuthResult(response.access_token);
+            }
+            else {
+              console.log("Not logged in.  Going to login now.");
+              yam.platform.login(function (response) { //prompt user to login and authorize your app, as necessary
+                if (response.authResponse) {
+                  displayAuthResult(response.access_token);
+                }
+              });
+            }
+          }
+        );
+
+      }
+
+      function logout() {
+        yam.platform.getLoginStatus(
+          function(response) {
+            if(response.authResponse) {
+              //do logout if logged in.  
+              yam.platform.logout(function (response) {
+                if (response){
+                  console.log("Logout success.");
+                  setLoginStatus(false);
+                  location.reload();
+                } else {
+                  console.log("Attempt to logout failed.");
+                }
+              });
+            
+            } else {
+              console.log("Already logged out");
+              setLoginStatus(false);
+            }
+          }
+        );
+      }
+
+      function doServerLogin(){
+        var url = "https://www.yammer.com/dialog/oauth?client_id={{dataAppId}}&redirect_uri=https://localhost:8888/sdk.html"
+        window.location = url;
+      }
+
+      $(document).ready(function () {
+        if (typeof console.log !== 'function') {
+          //fake it for unfortunate
+          console.log = function(){};
+          console.error = function(){};
+        }
+
+        $('#yammer-js-logout-button').click(logout);
+        $('#yammer-js-login-button').click(login);
+        $('#yammer-server-login').click(doServerLogin);
+        $('#yammer-user-button').click(getCurrentUser);
+
+        yam.connect.loginButton(
+            // You can specify a network here:
+            // {selector: "#yammer-login", network: "example.com"}
+            {selector: "#yammer-login"},
+            function (resp) {
+              if (resp.authResponse) {
+                console.log("Got auth back from login button.");
+                displayAuthResult(resp.access_token);
+
+                //logged in, might as well get current user.
+                getCurrentUser(function(user){
+                  $('#hello').html("Welcome " + user.full_name);
+                });;
+              }
+            }
+        );
+
+        /** Event Listeners */
+        yam.on('all', function(eventname, msg){
+          console.log("========>>> yam.all =>", eventname, (new Date).getTime());
+        });
+
+        yam.on('error', function(e){
+          console.error("======>>> yam.error =>", e);
+        });
+
+      });
+    </script>
+  <div id='page'>
+    <div class="not-logged-in">
+      <h2>Login Button</h2>
+      <span id="yammer-login"></span>
+
+      <h2>Login with Server Flow</h2>
+      <button id="yammer-server-login" class="yj-btn yj-btn-secondary">Login via Server Flow</button>
+    </div>
+    <div>
+      <h2>JS SDK</h2>
+      <button id="yammer-js-login-button">JS Login</button>
+      <button id="yammer-user-button">Get Current User</button>
+    </div>
+
+    <div class="logged-in" style="display:none">
+      <h1 id="hello"></h1>
+      <p>User is now signed in to the app using Yammer</p>
+      <button id="yammer-js-logout-button" class="yj-btn yj-btn-alt">Log out from your Yammer account</button>
+    </div>
+
+    <div class="logged-in" style="display:none">
+      <h2>Authentication Logs</h2>
+      <pre id="authResult"></pre>
+    </div>
+  </div>
+  </body>
+</html>

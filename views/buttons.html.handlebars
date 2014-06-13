@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+  <head>     
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="https://assets.yammer.com/assets/platform_embed.js"></script>
+  </head>
+  <body>
+  <script>
+    
+    $(document).ready(function () {
+
+      yam.connect.actionButton({
+        container: '#follow'
+      , action: 'follow'
+      });
+
+      yam.connect.actionButton({
+        container: '#like'
+        , action: 'like'
+      });
+
+      if (typeof console.log === 'function') {
+        /** Event Listeners */
+        yam.on('all', function(eventname, msg){
+          console.log("========>>> yam.all =>", eventname, (new Date).getTime());
+        });
+
+        yam.on('error', function(e){
+          console.error("======>>> yam.error =>", e);
+        });
+      }
+
+    });
+
+  </script>
+  <div id='page'>
+    <h2>Follow Button</h2>
+    <div id="follow"></div>
+
+    <h2>Like Button</h2>
+    <div id="like"></div>
+  </div>
+  </body>
+</html>
