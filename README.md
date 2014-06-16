@@ -1,4 +1,4 @@
-Demo for Yammer Platform in JavaScript
+## Demo for Yammer Platform in JavaScript
 
 More info at Yammer Developer site: 
 http://developer.yammer.com/connect/
@@ -15,6 +15,8 @@ $ cp server-conf.template server-conf
 $ npm install
 $ node server.js
 ```
+
+## More
 
 Checkout more in depth presentation: http://myot.github.io/yammer-platform-demo/presentations/index.html
 
