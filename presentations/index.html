@@ -91,13 +91,13 @@
 								        , feedType: 'open-graph'
 								        , feedId: ''
 								        , config: {
-								             use_sso: false
+								             use_sso: true
 								             , header: true
 								             , footer: false
 								             , showOpenGraphPreview: true
 								             , defaultToCanonical: true
 								             , hideNetworkName: true
-								                , promptText: 'Tell us what you working on?'
+								             , promptText: 'Let\'s talk about Bing!'
 
 								        }
 								        , objectProperties: { 
@@ -141,15 +141,48 @@
 				<section data-background="#4d7e65">
 					<section>
 						<h2>Javascript SDK</h2>
-						
-
+						<p>The JavaScript SDK enables you to use Yammer authentication and enrich your application with data from Yammer directly in your client application.
+							<ul>
+								<li>Login with Yammer Button</li>
+								<li>Login / Logout to Yammer</li>
+								<li>Yammer REST API calls</li>
+							</ul>
+						</p>
+					</section>
+					<section>
+						<h2>Setup</h2>
 							<ul>
 								<li>Sign up your application at <a href="https://www.yammer.com/client_applications">yammer.com</a></li>
 								<li>Set Redirect URL correctly</li>
 								<li>Set Javascript Origin</li>
 								<li>Include your Client ID on the include script tag</li>
+
 							</ul>
-						
+						<pre><code data-trim style="font-size: 14px; margin-top: 20px;">
+							<script data-app-id="YOUR_CLIENT_APPLICATION_ID" 
+src="https://assets.yammer.com/assets/platform_js_sdk.js"></script>
+						</code></pre>
+					</section>
+
+					<section>
+						<h2>Login Button</h2>
+						<div id='yammer-login' />
+						<script>yam.connect.loginButton({selector: '#yammer-login', network: 'salmonellaville.com'})</script>
+						<pre><code>yam.connect.loginButton(
+    // You can specify a network here:
+    // {selector: "#yammer-login", network: "example.com"}
+    {selector: "#yammer-login"},
+    function (resp) {
+      if (resp.authResponse) {
+        console.log("Got auth back from login button.");
+
+        //logged in, might as well get current user.
+        getCurrentUser(function(user){
+          $('#hello').html("Welcome " + user.full_name);
+        });;
+      }
+    }
+);</code></pre>
 					</section>
 
 					<section>
@@ -173,25 +206,7 @@
 );</code></pre>
 					</section>
 					
-					<section>
-						<h2>Login Button</h2>
-						<pre><code>yam.connect.loginButton(
-    // You can specify a network here:
-    // {selector: "#yammer-login", network: "example.com"}
-    {selector: "#yammer-login"},
-    function (resp) {
-      if (resp.authResponse) {
-        console.log("Got auth back from login button.");
-        displayAuthResult(resp.access_token);
-
-        //logged in, might as well get current user.
-        getCurrentUser(function(user){
-          $('#hello').html("Welcome " + user.full_name);
-        });;
-      }
-    }
-);</code></pre>
-					</section>
+					
 
 					<section>
 						<h2>Making API call</h2>
@@ -219,9 +234,9 @@
 						<p>
 							<a href="https://developer.yammer.com/restapi/">https://developer.yammer.com/restapi/</a>
 							<ul>
-								<li>Rate limits</li>
-								<li>No need for "/api/v1" in yam.platform.request</li>
+								<li>There will be rate limits</li>
 								<li>Use yam.platform.request instead of yam.request</li>
+								<li>No need for full hostname or "/api/v1" in yam.platform.request</li>
 								<li>yam.platform.request takes similar parameter as jQuery</li>
 							</ul>
 						</p>
