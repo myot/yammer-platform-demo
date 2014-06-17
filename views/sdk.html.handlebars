@@ -18,6 +18,11 @@
         }
       }
 
+      function displayData(data) {
+        console.dir(data);
+        $('#authResult').append(JSON.stringify(data, undefined, 2));
+      }
+
       function displayAuthResult(authResult) {
         console.log("AuthResult", authResult); //print user information to the console
 
@@ -25,38 +30,63 @@
         setLoginStatus(true);
 
         $('#authResult').html('Auth Result:<br/>');
-        for (var field in authResult) {
-          $('#authResult').append(' ' + field + ': ' +
-              authResult[field] + '<br/>');
-        }
+        displayData(authResult);
+
         $('#authOps').show('slow');
+      }
+
+      function getMessages(callback) {
+        yam.platform.request({
+          url: "messages/my_feed.json",     //this is one of many REST endpoints that are available
+          method: "GET",
+          data: { },
+          success: function (messages) { //print message response information to the console
+            
+            console.log("Message request was successful.");
+            
+            $('#authResult').html('Message Result:<br/>');
+            displayData(messages);
+
+          },
+          error: function (network) {
+            console.error("There was an error with getMessages request.", messages);
+          }
+        });
+      }
+
+      function getCurrentNetwork(callback) {
+        yam.platform.request({
+          url: "networks/current.json",     //this is one of many REST endpoints that are available
+          method: "GET",
+          data: { },
+          success: function (network) { //print message response information to the console
+            
+            console.log("Network request was successful.");
+            $('#authResult').html('Network Result:<br/>');
+            displayData(network);
+
+          },
+          error: function (network) {
+            console.error("There was an error with getCurrentNetwork request.", network);
+          }
+        });
       }
 
       function getCurrentUser(callback) {
         yam.platform.request({
-        // yam.request({
           url: "users/current.json",     //this is one of many REST endpoints that are available
           method: "GET",
           data: { },
           success: function (user) { //print message response information to the console
             currentUser = user;
             console.log("User request was successful.");
-            console.dir(user);
-
             setLoginStatus(true);
             $('#authResult').html('User Result:<br/>');
-            for (var field in user) {
-              $('#authResult').append(' ' + field + ': ' +
-                  escape(user[field]) + '<br/>');
-            }
-
-            if (callback){
-              callback(user);
-            }
+            displayData(user);
 
           },
           error: function (user) {
-            console.error("There was an error with the request.");
+            console.error("There was an error with getCurrentUser request.", user);
           }
         });
       }
@@ -121,6 +151,8 @@
         $('#yammer-js-login-button').click(login);
         $('#yammer-server-login').click(doServerLogin);
         $('#yammer-user-button').click(getCurrentUser);
+        $('#yammer-network-button').click(getCurrentNetwork);
+        $('#yammer-messages-button').click(getMessages);
 
         yam.connect.loginButton(
             // You can specify a network here:
@@ -132,9 +164,9 @@
                 displayAuthResult(resp.access_token);
 
                 //logged in, might as well get current user.
-                getCurrentUser(function(user){
-                  $('#hello').html("Welcome " + user.full_name);
-                });;
+                // getCurrentUser(function(user){
+                //   $('#hello').html("Welcome " + user.full_name);
+                // });;
               }
             }
         );
@@ -162,6 +194,8 @@
       <h2>JS SDK</h2>
       <button id="yammer-js-login-button">JS Login</button>
       <button id="yammer-user-button">Get Current User</button>
+      <button id="yammer-network-button">Get Current Network</button>
+      <button id="yammer-messages-button">Get Messages</button>
     </div>
 
     <div class="logged-in" style="display:none">
