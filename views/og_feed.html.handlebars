@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+<head></head>
+<body>
+    <script type="text/javascript" src="https://assets.yammer.com/assets/platform_embed.js"></script>
+    <div id="embedded-feed-advanced" style="height:600px;width:800px;"></div> 
+    <script>
+         yam.connect.embedFeed({
+		  container: '#embedded-feed-advanced'
+		        , network: 'microsoft.com'
+		        , feedType: 'open-graph'
+		        , feedId: ''
+		        , config: {
+		             use_sso: true
+		             , header: true
+		             , footer: false
+		             , showOpenGraphPreview: true
+		             , defaultToCanonical: true
+		             , hideNetworkName: true
+		             , promptText: 'Let\'s talk about Microsoft!'
+
+		        }
+		        , objectProperties: { 
+		          url: 'http://www.microsoft.com/'
+		          , type: 'page'
+		        }
+		    }); 
+    </script>
+</body>
+</html>
