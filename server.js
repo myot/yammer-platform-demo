@@ -12,6 +12,8 @@ var confPath = path.normalize(__dirname + '/server.conf');
 var confFile = fs.readFileSync(confPath, 'utf8');
 var conf = JSON.parse(confFile);
 
+var port = process.env.PORT || conf.port;
+
 var templateData = {
   dataAppId: conf.dataAppId
 };
@@ -31,7 +33,7 @@ var handleHTMLView = function (req, res){
 
 app.get('/:name.html', handleHTMLView);
 
-app.listen(conf.port);
+app.listen(port);
 
 console.log('PID: ' + process.pid);
 console.log('URL:');
